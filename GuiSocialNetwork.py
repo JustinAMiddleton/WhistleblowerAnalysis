@@ -35,19 +35,14 @@ class App():
 		self.initialize_attribute_objects()
 		self.create_main_window_controls()
 
-		self.progress_var = IntVar()
-		self.progress_var.set(0)
-		self.progress = ttk.Progressbar(self.frame, variable=self.progress_var, mode='determinate')
-		self.progress.grid(row=11, column=0, columnspan=4,sticky=W+E)
-		self.que = queue.Queue()
-
 	def search(self):
 		if not self.check_valid_search_arguments():
 			return	
 
 		self.start_button.config(state = DISABLED)
 
-		self.thread = GuiThread(self.attributes, 
+		self.thread = GuiThread(SearchInterface(),
+					self.attributes, 
 					self.get_search_arguments(),
 					self.que)
 		self.thread.start()
@@ -153,9 +148,13 @@ class App():
 		self.create_main_window_options_controls()
 		self.create_main_window_command_controls()
 
-		'''self.progress_var = IntVar()
-		self.progress = ttk.Progressbar(self.frame, variable=self.progress_var, mode='determinate')
-		self.progress.grid(row=11, column=0, columnspan=4,sticky=W+E)'''
+		self.progress_var = IntVar()
+		self.progress_var.set(0)
+		self.progress = ttk.Progressbar(self.frame, 
+						variable=self.progress_var, 
+						mode='determinate')
+		self.progress.grid(row=11, column=0, columnspan=4,sticky=W+E)
+		self.que = queue.Queue()
 
 	def create_main_window_attribute_controls(self):
 		self.defAtt = "Define Attribute"

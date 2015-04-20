@@ -5,7 +5,9 @@ Created on Feb 16, 2015
 '''
 
 from Tkinter import *
+import ttk
 import tkMessageBox
+import threading
 from tkFileDialog import *
 from Attribute import Attribute
 from SearchPacket import SearchPacket
@@ -13,6 +15,7 @@ from GuiThread import GuiThread
 from GuiAttributeWindow import AttributeWindow
 from GuiResultsWindow import ResultsWindow
 from EnronSearch.EnronInterface import EnronInterface
+import Queue as queue
 
 class App:
 	
@@ -24,7 +27,8 @@ class App:
 		self.frame.pack()
 		self.frame.grid(pady=15, padx=15)
 		master.title("Whistleblower Analysis")
-		master.geometry('320x405-625+200')
+		master.geometry('320x430-625+200')
+		self.root = master
 
 		self.initialize_attributes()
 		self.create_main_window_controls()
@@ -36,7 +40,10 @@ class App:
 			return 0 
 
 		self.start_button.config(state = DISABLED)
-		self.thread = GuiThread(EnronInterface(), self.attributes, self.args)
+		self.thread = GuiThread(EnronInterface(), 
+					self.attributes, 
+					self.args, 
+					self.que)
 		self.thread.start()
 		
 		while self.thread.interface == None:
@@ -52,8 +59,26 @@ class App:
 			self.thread.stop()
 			self.thread.join()
 	
+		self.secondary_thread = threading.Thread(target=self.score_results)
+		self.secondary_thread.start()
+		self.root.after(50, self.check_que)
+
+	def score_results(self):
+		self.interface.score(self.que)
 		self.show_results_window()
 		self.start_button.config(state = NORMAL)
+
+	def check_que(self):
+		while True:
+		    try: x = self.que.get_nowait()
+		    except queue.Empty:
+			self.root.after(25, self.check_que)
+			break
+		    else:
+			current_value = self.progress_var.get()
+			self.progress_var.set(current_value + x)
+			if x == 100:
+			    break
 
 	def initialize_attributes(self):
 		pass		
@@ -80,6 +105,14 @@ class App:
 		self.create_main_window_file_input_controls()
 		self.create_main_window_attribute_controls()
 		self.create_main_window_command_controls()
+
+		self.progress_var = IntVar()
+		self.progress_var.set(0)
+		self.progress = ttk.Progressbar(self.frame, 
+						variable=self.progress_var, 
+						mode='determinate')
+		self.progress.grid(row=11, column=0, columnspan=4,sticky=W+E)
+		self.que = queue.Queue()
 
 	def create_main_window_file_input_controls(self):
 		file_input_frame = Frame(self.frame)

@@ -17,7 +17,7 @@ search arguments.
 '''
 
 class GuiThread(threading.Thread):
-	def __init__(self, attributes, args, progress_que):
+	def __init__(self, interface, attributes, args, progress_que):
 		if attributes is None:
 			raise TypeError('attributes argument required')
 		elif args is None:
@@ -32,7 +32,8 @@ class GuiThread(threading.Thread):
 			raise TypeError('Attributes list must contain Attribute instances')
 
 		threading.Thread.__init__(self)
-		self.interface = SearchInterface()
+		#self.interface = SearchInterface()
+		self.interface = interface
 		self.search_packet = SearchPacket(attributes)
 		self.args = args
 		self.que = progress_que
