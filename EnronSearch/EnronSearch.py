@@ -89,5 +89,6 @@ class EnronSearch:
 	def clean_sentence(sentence):
 		space_pattern = re.compile('\s{2,}')
 		sentence = sentence.replace('\n', ' ')
+		sentence = sentence.replace('=20', ' ')
 		sentence = re.sub(space_pattern, ' ', sentence)
 		return sentence
