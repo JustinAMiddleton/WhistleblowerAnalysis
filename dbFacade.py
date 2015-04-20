@@ -41,11 +41,11 @@ class dbFacade(object):
 			VALUES ('%s', %s, '%s'); 
 			""" % (self.keyspace, username, score, website))
 			
-	def add_post(self, username, website, content, query, score):	
+	def add_post(self, username, website, content, query, scores):	
 		self.session.execute("""
-			INSERT INTO %s.posts (id, username, website, content, query,  score)
-			VALUES (%s, '%s', '%s', '%s', '%s', %s);
-			""" % (self.keyspace, uuid.uuid1(), username, website, content, query, score))
+			INSERT INTO %s.posts (id, username, website, content, query, score1, score2, score3, score4, score5)
+			VALUES (%s, '%s', '%s', '%s', '%s', %s, %s, %s, %s, %s);
+			""" % (self.keyspace, uuid.uuid1(), username, website, content, query, scores[0], scores[1], scores[2], scores[3], scores[4]))
 	
 	def get_users(self):	
 		query = "SELECT * FROM %s.users;" % self.keyspace
@@ -90,18 +90,25 @@ class dbFacade(object):
 	'''
 	This function should possibly be in Scorer instead of dbFacade
 	'''
-	def calculate_user_scores(self, users):
+	def calculate_user_scores(self, scorer):
+		users = self.get_users_dict()
+		sums = []
 		scores = []
 
 		for user in users:
 			posts = self.get_posts(user['username'])
-			total = 0
-			for post in posts:
-				total += post['score']
-			user['score'] = total
+			sum = scorer.sum_posts(posts)
+			sums.append(sum)
+		
+		scorer.make_graph()
+		
+		for user, sum in zip(users, sums):
+			score = scorer.get_prob(sum)
+			user['score'] = score
 			scores.append(user['score'])
-
-		return scores
+		
+		self.populate_user_scores(users, scores)
+		#return scores
 
 	def populate_user_scores(self, users, scores):
 		for i in range(0, len(users)):
@@ -144,7 +151,11 @@ class dbFacade(object):
 				website text,
 				content text,
 				query text,
-				score float,
+				score1 float,
+				score2 float,
+				score3 float,
+				score4 float,
+				score5 float,
 				PRIMARY KEY (username, id)	
 			);
 			""" % self.keyspace)

@@ -32,7 +32,7 @@ class Tweet(object):
 
 	def score_post(self, scorer):
 		try:
-			return float(scorer.score(self.content))
+			return scorer.score(self.content)
 		except UnicodeDecodeError:
 			self.content = self.content.decode('utf-8')
-			return float(scorer.score(self.content))
+			return scorer.score(self.content)

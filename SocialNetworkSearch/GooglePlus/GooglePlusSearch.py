@@ -103,10 +103,10 @@ class GooglePlusSearch(object):
 				post = plus_post.post.decode('utf-8').replace("'", "''")
 				post = post.encode('utf-8')
 			try:
-				score = float(self.scorer.score(post))
+				score = self.scorer.score(post)
 			except UnicodeDecodeError:
 				post = post.decode('utf-8')
-				score = float(self.scorer.score(post))
+				score = self.scorer.score(post)
 
 			try:
 				self.db.add_post(author, 'Google+', post, self.query, score)

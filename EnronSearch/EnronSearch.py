@@ -66,9 +66,9 @@ class EnronSearch:
 
 				for sentence in sentences:
 					sentence = EnronSearch.clean_sentence(sentence)
-					score = float(self.scorer.score(sentence))
-					if score > 0:
-						self.db.add_post(user, 'Enron', sentence.replace("'", "''"), word, score)
+					scores = self.scorer.score(sentence)
+					if sum(scores) > 0:
+						self.db.add_post(user, 'Enron', sentence.replace("'", "''"), word, scores)
 						self.total_sentences_matched += 1
 				break
 			index += 1

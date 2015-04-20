@@ -56,6 +56,4 @@ class SearchInterface:
 	'''	
 	def score(self):
 		print "Scoring..\n"
-		users = self.db.get_users_dict()
-		scores = self.db.calculate_user_scores(users)
-		self.db.populate_user_scores(users, scores)
+		self.db.calculate_user_scores(self.scorer)
