@@ -73,7 +73,7 @@ class SearchInterface:
 				completion = completion - 1
 				if completion < 0:
 					completion = 0.0
-
+					
 	def update_user_score(self, user, sum):
 		posts = self.db.get_posts(user['username'])
 		score = self.scorer.get_prob(sum)
@@ -89,9 +89,9 @@ class SearchInterface:
 		for user in users:
 			posts = self.db.get_posts(user['username'])
 			sum = self.scorer.sum_posts(posts)
-			scorer.add_point(sum)
+			self.scorer.add_point(sum)
 			sums.append(sum)
 		
-		scorer.fit_graphs()
+		self.scorer.fit_graphs()
 		return sums
 
