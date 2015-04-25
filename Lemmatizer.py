@@ -39,5 +39,5 @@ class Lemmatizer():
 				lemmatized = self.lemmatizer.lemmatize(token, pos='r')
 			else:
 				lemmatized = self.lemmatizer.lemmatize(token) #pos = 'n'
-			lemmas.append(lemmatized)
+			lemmas.append(lemmatized.encode("utf-8"))
 		return lemmas

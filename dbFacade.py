@@ -41,11 +41,11 @@ class dbFacade(object):
 			VALUES ('%s', %s, '%s'); 
 			""" % (self.keyspace, username, score, website))
 			
-	def add_post(self, username, website, content, query, score):	
+	def add_post(self, username, website, content, query, scores):	
 		self.session.execute("""
-			INSERT INTO %s.posts (id, username, website, content, query,  score)
-			VALUES (%s, '%s', '%s', '%s', '%s', %s);
-			""" % (self.keyspace, uuid.uuid1(), username, website, content, query, score))
+			INSERT INTO %s.posts (id, username, website, content, query, score1, score2, score3, score4, score5)
+			VALUES (%s, '%s', '%s', '%s', '%s', %s, %s, %s, %s, %s);
+			""" % (self.keyspace, uuid.uuid1(), username, website, content, query, scores[0], scores[1], scores[2], scores[3], scores[4]))
 	
 	def get_users(self):	
 		query = "SELECT * FROM %s.users;" % self.keyspace
@@ -121,7 +121,11 @@ class dbFacade(object):
 				website text,
 				content text,
 				query text,
-				score float,
+				score1 float,
+				score2 float,
+				score3 float,
+				score4 float,
+				score5 float,
 				PRIMARY KEY (username, id)	
 			);
 			""" % self.keyspace)

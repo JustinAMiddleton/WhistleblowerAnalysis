@@ -8,6 +8,7 @@ sweet scoring action. Radical, dude!
 from nltk import word_tokenize
 from Attribute import Attribute
 from Lemmatizer import Lemmatizer
+from nltk.corpus import stopwords
 
 class SearchPacket:
 	'''
@@ -52,7 +53,6 @@ class SearchPacket:
 			raise ValueError("sanitizeAttribute: Bad attribute weight.")
 			
 		dirtyWords = attr.get_words()
-		dirtyWords = self.lemma.lemmatizeTokens(dirtyWords)
 		dirtyWeights = attr.get_weights()
 		dirtySents = attr.get_sentiments()
 		
@@ -85,10 +85,12 @@ class SearchPacket:
 		cleanWords = []
 		cleanWeights = []
 		cleanSents = []
-		
+
+		stop = stopwords.words("english")
 		for word, weight, sent in zip(dirtyWords, dirtyWeights, dirtySents):
 			word = word.lower()
-			if word in cleanWords or word == "":
+			word = self.lemma.lemmatizeTokens([word])[0]
+			if word in cleanWords or word in stop or word == "":
 				continue
 			if weight < 1 or weight > 3:
 				continue
@@ -98,7 +100,7 @@ class SearchPacket:
 			cleanWords.append(word)
 			cleanWeights.append(weight)
 			cleanSents.append(sent)	
-			
+		print cleanWords
 		return cleanWords, cleanWeights, cleanSents
 	
 	'''

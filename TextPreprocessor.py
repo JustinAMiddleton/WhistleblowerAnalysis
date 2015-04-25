@@ -43,12 +43,12 @@ class TextPreprocessor:
 		self.lemmatized = self.lemmatizer.lemmatizeTokens(self.tokens)
 		
 		#TODO: Get rid of timing stuff when necessary
-		t1 = time.time()
+		'''t1 = time.time()
 		if t1-t0 > 1:	
 			print "Time:", t1-t0
 			print "Text:", text
 			print "\tFixed:", self.get_words()
-			print
+			print'''
 		
 	'''
 	Uses the textblob library to attempt to check the speller.

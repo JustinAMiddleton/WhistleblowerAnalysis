@@ -31,7 +31,15 @@ class Attribute():
 		return True
 
 	def set_name(self, name):
-		self.name = name
+		#We don't really want to change the attribute name, here.
+		if name != "Attribute":
+			self.name = name
+			
+		#This is to give each attribute a name of its own that isn't the default "Attribute"
+		if name == "Attribute" and self.words is not None and self.weights is not None:
+			newName = self.generateName(self.words, self.weights)
+			if newName != "":
+				self.name = newName
 		
 	def set_attr_weight(self, weight):
 		if weight == "High":
@@ -159,3 +167,19 @@ class Attribute():
 			raise ValueError("get_word: No words to calculate score.")
 			
 		return sum(self.weights)
+		
+	'''Generates a name based on the first highest weighted word.'''
+	def generateName(self, words, weights):
+		if words is None or weights is None:
+			raise ValueError("generateName: words and weights must not be none.")
+		if len(words) == 0 or len(words) != len(weights):
+			raise ValueError("generateName: words and weights must be the same size.")
+			
+		max = 0
+		name = ""
+		for word, weight in zip(words, weights):
+			if weight > max and word != "":
+				max = weight
+				name = word
+
+		return name

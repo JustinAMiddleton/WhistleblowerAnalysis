@@ -89,11 +89,14 @@ class AttributeWindow:
 		weights = self.get_control_values(values[1])
 		sentiments = self.get_control_values(values[2])
 	
-		attribute.name = values[3].get()
 		attribute.set_attr_weight(values[4].get())
 		attribute.set_words(words)
 		attribute.set_weights(weights)
 		attribute.set_sentiments(sentiments)
+		
+		#This is below the rest because set_name will choose a name from the words
+		#if no name is actually provided.
+		attribute.set_name(values[3].get())
 
 		self.attribute_labels[index]['text'] = attribute.name
 
