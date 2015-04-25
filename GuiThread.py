@@ -17,15 +17,11 @@ search arguments.
 '''
 
 class GuiThread(threading.Thread):
-	def __init__(self, interface, attributes, args):
-		if interface is None:
-			raise TypeError('interface argument required')
-		elif attributes is None:
+	def __init__(self, interface, attributes, args, progress_que):
+		if attributes is None:
 			raise TypeError('attributes argument required')
 		elif args is None:
 			raise TypeError('args argument required')
-		elif not isinstance(interface, SearchInterface):
-			raise TypeError('SearchInterface instance required')
 		elif not isinstance(attributes, list):
 			raise TypeError('attributes argument must be a list')
 		elif not isinstance(args, dict):
@@ -36,14 +32,19 @@ class GuiThread(threading.Thread):
 			raise TypeError('Attributes list must contain Attribute instances')
 
 		threading.Thread.__init__(self)
+		#self.interface = SearchInterface()
 		self.interface = interface
 		self.search_packet = SearchPacket(attributes)
 		self.args = args
+		self.que = progress_que
+
 	def run(self):
 		self.interface.initialize_scorer(self.search_packet)
 		self.query = self.search_packet.getQuery()
 		self.interface.search(self.query, self.args)
-		self.interface.score()
 		time.sleep(1)
+
 	def stop(self):
 		self.interface.stop_search()
+
+

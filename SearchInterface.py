@@ -49,11 +49,49 @@ class SearchInterface:
 				time.sleep(1)
 			thread.join()
 
-
 	'''
-	Retrieves users, calculates user scores, 
-	updates score in database, and prints top 10 results.
+	Retrieves users, calculates user scores, and
+	updates score in database
 	'''	
-	def score(self):
+	def score(self, progress_que):
 		print "Scoring..\n"
-		self.db.calculate_user_scores(self.scorer)
+		users = self.db.get_users_dict()
+		progress_que.put(33)
+		self.populate_user_scores(users, progress_que)
+
+	def populate_user_scores(self, users, progress_que):
+		completion = 0.0
+		step_progress = ((1.0/len(users))*0.67)*100
+		sums = self.fit_scorer(users)
+
+		for user, sum in zip(users, sums):
+			self.update_user_score(user, sum)
+			
+			completion = completion + step_progress
+			if completion >= 1:
+				progress_que.put(1)
+				completion = completion - 1
+				if completion < 0:
+					completion = 0.0
+
+	def update_user_score(self, user, sum):
+		posts = self.db.get_posts(user['username'])
+		score = self.scorer.get_prob(sum)
+		user['score'] = score
+		
+		self.db.insert_user_score(
+			user['username'], 
+			user['score'], 
+			user['website'])
+			
+	def fit_scorer(self, users):
+		sums = []
+		for user in users:
+			posts = self.db.get_posts(user['username'])
+			sum = self.scorer.sum_posts(posts)
+			scorer.add_point(sum)
+			sums.append(sum)
+		
+		scorer.fit_graphs()
+		return sums
+

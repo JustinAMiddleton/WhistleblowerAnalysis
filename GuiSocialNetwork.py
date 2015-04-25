@@ -7,6 +7,7 @@ Created on Feb 18, 2015
 '''
 
 from Tkinter import *
+import ttk
 import tkMessageBox
 from Attribute import Attribute
 from SearchPacket import SearchPacket
@@ -18,7 +19,7 @@ import time
 import threading
 import thread
 import sys
-import Queue
+import Queue as queue
 
 class App():
 	attributes = []
@@ -28,7 +29,8 @@ class App():
 		self.frame.pack()
 		self.frame.grid(pady=15, padx=15)
 		master.title("Whistleblower Analysis")
-		master.geometry('500x370-625+200')
+		master.geometry('500x400-625+200')
+		self.root = master
 
 		self.initialize_attribute_objects()
 		self.create_main_window_controls()
@@ -38,14 +40,19 @@ class App():
 			return	
 
 		self.start_button.config(state = DISABLED)
-		self.thread = GuiThread(SearchInterface(), self.attributes, self.get_search_arguments())
+
+		self.thread = GuiThread(SearchInterface(),
+					self.attributes, 
+					self.get_search_arguments(),
+					self.que)
 		self.thread.start()
-		
+		self.root.after(50, self.check_que)
 		while self.thread.interface == None:
 			time.sleep(1)
 
 		self.interface = self.thread.interface
 		self.stop_button.config(state = NORMAL)
+		
 
 	def stop(self):
 		self.stop_button.config(state = DISABLED)
@@ -53,9 +60,29 @@ class App():
 		if self.thread.isAlive():
 			self.thread.stop()
 			self.thread.join()
-	
+		
+		self.secondary_thread = threading.Thread(target=self.score_results)
+		self.secondary_thread.start()
+		self.root.after(50, self.check_que)
+
+
+	def score_results(self):
+		self.interface.score(self.que)
 		self.show_results_window()
 		self.start_button.config(state = NORMAL)
+
+	def check_que(self):
+		while True:
+		    try: x = self.que.get_nowait()
+		    except queue.Empty:
+			self.root.after(25, self.check_que)
+			break
+		    else:
+			current_value = self.progress_var.get()
+			self.progress_var.set(current_value + x)
+			if x == 100:
+			    break
+		
 
 	def check_valid_search_arguments(self):
 		if not self.twitter_enabled.get():
@@ -121,6 +148,14 @@ class App():
 		self.create_main_window_options_controls()
 		self.create_main_window_command_controls()
 
+		self.progress_var = IntVar()
+		self.progress_var.set(0)
+		self.progress = ttk.Progressbar(self.frame, 
+						variable=self.progress_var, 
+						mode='determinate')
+		self.progress.grid(row=11, column=0, columnspan=4,sticky=W+E)
+		self.que = queue.Queue()
+
 	def create_main_window_attribute_controls(self):
 		self.defAtt = "Define Attribute"
 		attributes = Frame(self.frame)
@@ -143,6 +178,7 @@ class App():
 				command=self.stop, font = "Verdana 10")
 		self.stop_button.grid(row=9, pady=5)
 		self.stop_button.config(state = DISABLED)
+		
 
 	def create_attribute_label_controls(self, frame):
 		self.attribute_labels = []

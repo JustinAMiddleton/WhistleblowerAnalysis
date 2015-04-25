@@ -101,7 +101,6 @@ class Scorer():
 			results = np.array(yAxis)
 			l.fit(data, results)
 			self.graphs.append(l)
-			print(yAxis)
 			
 	'''Sends the points through the numpy standard deviation finder and returns the results.'''
 	def getSTD(self, dimension):
