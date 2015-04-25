@@ -34,19 +34,20 @@ class EnronSearch:
 
 	def search_enron(self):
 
-		my_sent_folder = r'/sent/'#, r'/sent_items/']  # there are more sent folders than this, let's start small though
+		my_sent_folders = [r'/sent/', r'/sent_items/']  # there are more sent folders than this, let's start small though
 
 		user_directory_list = os.listdir(self.email_main_directory)
 
 		for user_dir in user_directory_list:
-			#for my_sent_folder in my_sent_folders:
-			for sent_folder, no_directories, email_files in os.walk(self.email_main_directory + user_dir + my_sent_folder):
-				for email_file_name in email_files:
-					email_file = open((sent_folder + email_file_name), 'r')
-					email = email_file.read()
-					email_file.close()
-					self.process_email(email, user_dir)
-					self.total_emails += 1
+			for my_sent_folder in my_sent_folders:
+				for sent_folder, no_directories, email_files in os.walk(self.email_main_directory + user_dir + my_sent_folder):
+					for email_file_name in email_files:
+						#The extra forward slash is in case there is another folder inside the sent folder.
+						email_file = open((sent_folder + "/" + email_file_name), 'r')
+						email = email_file.read()
+						email_file.close()
+						self.process_email(email, user_dir)
+						self.total_emails += 1
 			print user_dir
 
 			self.db.add_user(user_dir, 0, 'Enron')

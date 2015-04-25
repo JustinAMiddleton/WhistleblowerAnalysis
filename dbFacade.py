@@ -98,9 +98,10 @@ class dbFacade(object):
 		for user in users:
 			posts = self.get_posts(user['username'])
 			sum = scorer.sum_posts(posts)
+			scorer.add_point(sum)
 			sums.append(sum)
 		
-		scorer.make_graph()
+		scorer.fit_graphs()
 		
 		for user, sum in zip(users, sums):
 			score = scorer.get_prob(sum)
