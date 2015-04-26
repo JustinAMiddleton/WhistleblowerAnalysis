@@ -1,5 +1,5 @@
 import unittest
-from Attribute import Attribute #CHANGETHIS
+from Attribute import Attribute
 
 class test_Attribute(unittest.TestCase):
 	def setUp(self):
@@ -58,6 +58,17 @@ class test_Attribute(unittest.TestCase):
 		correct = Attribute("realname", 1, ["tests"], [1], [-1])
 		self.assertEquals(self.test, correct)
 		
+	def test200_001_setname_Attribute(self):
+		self.test.set_name("Attribute")
+		correct = Attribute("tests", 1, ["tests"], [1], [-1])
+		self.assertEquals(self.test, correct)
+		
+	def test200_002_setname_withNone(self):
+		test = Attribute("name", 1, ["test"])
+		test.set_name("realname")
+		correct = Attribute("realname", 1, ["test"])
+		self.assertEquals(test, correct)
+		
 #set_attr_weight
 	def test300_000_setattrweight(self):
 		self.test.set_attr_weight(3)
@@ -70,7 +81,7 @@ class test_Attribute(unittest.TestCase):
 		correct = Attribute("test",1, ["real", "words"], [1], [-1])
 		self.assertEquals(self.test, correct)
 		
-#set_weight_nums
+#set_weight
 	def test500_000_setweights(self):
 		self.test.set_weights(["High", "Low", "Blah", "Medium"])
 		correct = Attribute("test", 1, ["tests"], [3,1,1,2], [-1])
@@ -81,11 +92,31 @@ class test_Attribute(unittest.TestCase):
 		correct = Attribute("test", 1, ["tests"], [], [-1])
 		self.assertEquals(self.test, correct)
 		
+	def test500_900_setweights_notstring(self):
+		correctError = "set_weights: "
+		try:
+			self.test.set_weights([1])
+			self.fail("Error: no error!")
+		except ValueError, e:
+			self.assertEqual(correctError, str(e)[:len(correctError)])
+		except Exception, e:
+			self.fail(str(e))
+		
 #set_weights_nums
 	def test600_000_setweightsnums(self):
 		self.test.set_weights_nums([2,3])
 		correct = Attribute("test", 1, ["tests"], [2,3], [-1])
 		self.assertEquals(self.test, correct)
+		
+	def test600_900_setweights_notint(self):
+		correctError = "set_weights_nums: "
+		try:
+			self.test.set_weights_nums(["High"])
+			self.fail("Error: no error!")
+		except ValueError, e:
+			self.assertEqual(correctError, str(e)[:len(correctError)])
+		except Exception, e:
+			self.fail(str(e))
 		
 #set_sentiments
 	def test700_000_setsents(self):
@@ -217,6 +248,39 @@ class test_Attribute(unittest.TestCase):
 		try:
 			a = Attribute()
 			a.get_max_score()
+			self.fail("Error: no error!")
+		except ValueError, e:
+			self.assertEqual(correctError, str(e)[:len(correctError)])
+		except Exception, e:
+			self.fail(str(e))
+			
+#generate_name
+	def test110_000_generatename(self):
+		words = ["not this", "not this", "this", "not this"]
+		weights = [1,2,3,3]
+		test = Attribute()
+		self.assertEquals(test.generate_name(words, weights), "this")
+		
+	def test110_001_generatename_blank(self):
+		words = []
+		weights = []
+		test = Attribute()
+		self.assertEquals(test.generate_name(words, weights), "")
+		
+	def test110_900_generatename_None(self):
+		correctError = "generate_name: "
+		try:
+			Attribute().generate_name(None, None)
+			self.fail("Error: no error!")
+		except ValueError, e:
+			self.assertEqual(correctError, str(e)[:len(correctError)])
+		except Exception, e:
+			self.fail(str(e))
+			
+	def test110_900_generatename_Unbalanced(self):
+		correctError = "generate_name: "
+		try:
+			Attribute().generate_name(["word"], [1,2])
 			self.fail("Error: no error!")
 		except ValueError, e:
 			self.assertEqual(correctError, str(e)[:len(correctError)])

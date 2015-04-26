@@ -1,7 +1,7 @@
 from Lemmatizer import Lemmatizer
 from nltk.corpus import stopwords
 from nltk import word_tokenize
-from textblob import TextBlob, Word
+#from textblob import TextBlob, Word
 import time
 
 '''
@@ -42,20 +42,12 @@ class TextPreprocessor:
 		#self.spellchecked = self.spellcheck(self.tokens)
 		self.lemmatized = self.lemmatizer.lemmatizeTokens(self.tokens)
 		
-		#TODO: Get rid of timing stuff when necessary
-		'''t1 = time.time()
-		if t1-t0 > 1:	
-			print "Time:", t1-t0
-			print "Text:", text
-			print "\tFixed:", self.get_words()
-			print'''
-		
 	'''
 	Uses the textblob library to attempt to check the speller.
 	The textblob checker is based on Peter Norvig's implementation: http://norvig.com/spell-correct.html
 	It has about a 70% accuracy.
 	@PROBLEM: This takes way too long. What's the dealio!
-	'''
+	
 	def spellcheck(self, tokens):
 		newTokens = []
 		for word in tokens:
@@ -71,6 +63,7 @@ class TextPreprocessor:
 				newTokens.append(word)
 			
 		return newTokens
+	'''
 		
 	'''getters'''
 	def get_raw(self):

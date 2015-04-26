@@ -14,14 +14,14 @@ class test_SearchPacket(unittest.TestCase):
 		self.attr1 = Attribute()
 		self.attr1.name = "one"
 		self.attr1.set_words(["one", "two", "three"])
-		self.attr1.set_weights([1,2,3])
-		self.attr1.set_sentiments([1,1,1])
+		self.attr1.set_weights_nums([1,2,3])
+		self.attr1.set_sentiments_nums([1,1,1])
 		
 		self.attr2 = Attribute()
 		self.attr2.name = "two"
 		self.attr2.set_words(["four", "five", "six"])
-		self.attr2.set_weights([3,2,1])
-		self.attr2.set_sentiments([-1,1,-1])
+		self.attr2.set_weights_nums([3,2,1])
+		self.attr2.set_sentiments_nums([-1,1,-1])
 		
 		self.attrs = [self.attr1, self.attr2]
 		self.packet = SearchPacket(self.attrs)

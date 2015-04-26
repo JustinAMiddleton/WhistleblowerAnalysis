@@ -16,6 +16,7 @@ class Attribute():
 		self.weights = weights
 		self.sentiments = sentiments
 		
+	'''Just checks to see that all values are equal.'''
 	def __eq__(self, other):
 		if self.name != other.name:
 			return False
@@ -29,7 +30,12 @@ class Attribute():
 			return False
 		
 		return True
-
+	
+	'''
+	name:	A string by which this attribute will be referred.
+			Special case:	The name "Attribute" will indicate that the name was not set in the GUI.
+										In this case, set the name to the first highest-value word.
+	'''
 	def set_name(self, name):
 		#We don't really want to change the attribute name, here.
 		if name != "Attribute":
@@ -37,8 +43,9 @@ class Attribute():
 			
 		#This is to give each attribute a name of its own that isn't the default "Attribute"
 		if name == "Attribute" and self.words is not None and self.weights is not None:
-			newName = self.generateName(self.words, self.weights)
-			if newName != "":
+			newName = self.generate_name(self.words, self.weights)
+			#If no words are set, then we don't have anything to change it to.
+			if newName != "":	
 				self.name = newName
 		
 	def set_attr_weight(self, weight):
@@ -54,6 +61,9 @@ class Attribute():
 
 	'''Expects a list of strings.'''
 	def set_weights(self, weights):
+		if len(weights) > 0 and not isinstance(weights[0], basestring):
+			raise ValueError("set_weights: This function expects strings.")
+	
 		newWeights = []
 		for weight in weights:
 			if weight == "High":
@@ -66,10 +76,16 @@ class Attribute():
 		
 	'''Expects a list of numbers.'''
 	def set_weights_nums(self, weights):
+		if len(weights) > 0 and not isinstance(weights[0], int):
+			raise ValueError("set_weights_nums: This function expects numbers.")
+			
 		self.weights = weights
 
 	'''Expects a list of strings.'''
 	def set_sentiments(self, sentiments):
+		if len(sentiments) > 0 and not isinstance(sentiments[0], basestring):
+			raise ValueError("set_sentiments: This function expects strings.")	
+
 		newSentiments = []
 		for sentiment in sentiments:
 			if sentiment == "Neutral" or sentiment == "Sentiment": #The latter happens when it goes unset.
@@ -82,14 +98,22 @@ class Attribute():
 		
 	'''Expects a list of numbers.'''
 	def set_sentiments_nums(self, sentiments):
+		if len(sentiments) > 0 and not isinstance(sentiments[0], int):
+			raise ValueError("set_weights_nums: This function expects numbers.")	
+
 		self.sentiments = sentiments
 
+	'''Returns the word in an attribute from a given index (int)'''
 	def get_word(self, index):
-		if index >= len(self.words):
+		if not isinstance(index, int) or index >= len(self.words):
 			raise ValueError("get_word: Index out of bounds.")
 		
 		return self.words[index]
 
+	'''
+	index:	int, index of word in internal array
+	returns:	word "High, "Medium", or "Low"
+	'''
 	def get_weight(self, index):
 		if index >= len(self.words):
 			raise ValueError("get_word: Index out of bounds.")
@@ -107,6 +131,10 @@ class Attribute():
 			
 		return self.weights[index]
 
+	'''
+	index:	int, index of word in internal array
+	returns:	word "Positive", "Neutral", or "Negative"
+	'''
 	def get_sentiment(self, index):
 		if index >= len(self.words):
 			raise ValueError("get_word: Index out of bounds.")
@@ -124,6 +152,7 @@ class Attribute():
 			
 		return self.sentiments[index]
 			
+	'''Returns # of words in attribute'''
 	def get_size(self):
 		if self.words is None:
 			return 0
@@ -169,11 +198,11 @@ class Attribute():
 		return sum(self.weights)
 		
 	'''Generates a name based on the first highest weighted word.'''
-	def generateName(self, words, weights):
+	def generate_name(self, words, weights):
 		if words is None or weights is None:
-			raise ValueError("generateName: words and weights must not be none.")
-		if len(words) == 0 or len(words) != len(weights):
-			raise ValueError("generateName: words and weights must be the same size.")
+			raise ValueError("generate_name: words and weights must not be none.")
+		if len(words) != len(weights):
+			raise ValueError("generate_name: words and weights must be the same size.")
 			
 		max = 0
 		name = ""
