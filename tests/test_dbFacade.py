@@ -27,14 +27,18 @@ class test_dbFacade(unittest.TestCase):
 			"Invalid query" in str(e)
 		
 	def test_add_post_and_get_posts(self):
-		self.db.add_post("Charlie", "Twitter", "Hi there", "Hi", 100)
+		self.db.add_post("Charlie", "Twitter", "Hi there", "Hi", [100, 90, 80, 70, 60])
 		posts = self.db.get_posts("Charlie")
 		self.assertEquals(len(posts), 1)
 		self.assertEquals(posts[0].username, "Charlie")
 		self.assertEquals(posts[0].website, "Twitter")
 		self.assertEquals(posts[0].content, "Hi there")
 		self.assertEquals(posts[0].query, "Hi")
-		self.assertEquals(posts[0].score, 100.0)
+		self.assertEquals(posts[0].score1, 100.0)
+		self.assertEquals(posts[0].score2, 90.0)
+		self.assertEquals(posts[0].score3, 80.0)
+		self.assertEquals(posts[0].score4, 70.0)
+		self.assertEquals(posts[0].score5, 60.0)
 		
 	def test_add_post_raise_exception_when_no_keyspace(self):
 		db = dbFacade()

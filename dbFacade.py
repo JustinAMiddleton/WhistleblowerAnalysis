@@ -45,7 +45,8 @@ class dbFacade(object):
 		self.session.execute("""
 			INSERT INTO %s.posts (id, username, website, content, query, score1, score2, score3, score4, score5)
 			VALUES (%s, '%s', '%s', '%s', '%s', %s, %s, %s, %s, %s);
-			""" % (self.keyspace, uuid.uuid1(), username, website, content, query, scores[0], scores[1], scores[2], scores[3], scores[4]))
+			""" % (self.keyspace, uuid.uuid1(), username, website, content, query, \
+				scores[0], scores[1], scores[2], scores[3], scores[4]))
 	
 	def get_users(self):	
 		query = "SELECT * FROM %s.users;" % self.keyspace

@@ -12,6 +12,8 @@ def format_email(email):
 	email = remove_tags(email)
 	email = remove_forwards(email)
 	email = remove_replies(email)
+	#remove markup on the emails
+	email = re.sub(r"<.*>", r"", email)
 	return email
 
 

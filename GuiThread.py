@@ -18,10 +18,14 @@ search arguments.
 
 class GuiThread(threading.Thread):
 	def __init__(self, interface, attributes, args, progress_que):
-		if attributes is None:
+		if interface is None:
+			raise TypeError('interface argument required')
+		elif attributes is None:
 			raise TypeError('attributes argument required')
 		elif args is None:
 			raise TypeError('args argument required')
+		elif not isinstance(interface, SearchInterface):
+			raise TypeError('interface must be a subclass of SearchInterface')
 		elif not isinstance(attributes, list):
 			raise TypeError('attributes argument must be a list')
 		elif not isinstance(args, dict):
