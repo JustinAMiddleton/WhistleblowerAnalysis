@@ -78,9 +78,7 @@ class Scorer():
 			dimension.sort()
 			
 			#The moment we hit an array with zero as the highest, then there's nothing to be done.
-			if len(dimension) == 0:
-				pass
-			if dimension[-1] == 0:
+			if len(dimension) == 0 or dimension[-1] == 0:
 				self.graphs.append(None)
 				continue
 			
@@ -178,8 +176,11 @@ class Scorer():
 			predictedProb = logit.predict_proba([num])[0][1]
 			prob += predictedProb*attrWeight
 			ctr += attrWeight
+			
+		if ctr > 0:
+			prob /= ctr
 				
-		return prob / ctr
+		return prob
 
 	
 		'''

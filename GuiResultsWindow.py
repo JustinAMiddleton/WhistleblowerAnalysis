@@ -19,9 +19,7 @@ class ResultsWindow:
 		toplevel.geometry('320x320-160+200')
 		results_frame = Frame(toplevel)
 		results_frame.pack()
-
 		top_users = self.db.get_scored_users()
-
 		postButtons = []
 		for i in range(0,len(top_users)):
 			Label(results_frame, text=i+1).grid(row=i, column=0)
