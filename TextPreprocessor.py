@@ -40,7 +40,7 @@ class TextPreprocessor:
 		stop = stopwords.words("english")
 		self.tokens = [word for word in self.tokens if word not in stop] #clear it of pesky stop words
 		#self.spellchecked = self.spellcheck(self.tokens)
-		self.lemmatized = self.lemmatizer.lemmatizeTokens(self.tokens)
+		self.lemmatized = self.lemmatizer.stem(self.tokens) #self.lemmatizer.lemmatizeTokens(self.tokens)
 		
 	'''
 	Uses the textblob library to attempt to check the speller.
@@ -78,6 +78,6 @@ class TextPreprocessor:
 	def get_lemmatized(self):
 		return self.lemmatized
 		
-	'''A sort of default getter so I don't have to keep changing things.'''
+	'''A sort of default getter so I don't have to keep changing things elsewhere.'''
 	def get_words(self):
 		return self.lemmatized

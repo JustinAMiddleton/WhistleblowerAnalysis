@@ -91,7 +91,7 @@ class SearchPacket:
 		stop = stopwords.words("english")
 		for word, weight, sent in zip(dirtyWords, dirtyWeights, dirtySents):
 			word = word.lower()
-			word = self.lemma.lemmatizeTokens([word])[0]
+			word = self.lemma.stem([word])[0]#self.lemma.lemmatizeTokens([word])[0]
 			if word in cleanWords or word in stop or word == "":
 				continue
 			if weight < 1 or weight > 3:

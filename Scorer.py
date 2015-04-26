@@ -89,10 +89,12 @@ class Scorer():
 			yAxis = [0 for i in range(0, len(dimension))]
 			yAxis[-1] = 1
 
-			dimension.append(avg + std)
-			yAxis.append(1)
-			dimension.append(maxVal - std)
-			yAxis.append(1)
+			self.setClosestTo(dimension, yAxis, avg + std)
+			self.setClosestTo(dimension, yAxis, avg + 2*std)
+			self.setClosestTo(dimension, yAxis, avg + 2.5*std)
+			print avg, std
+			print dimension
+			print yAxis
 			
 			l = LogisticRegression(C=1.0)
 			data = np.array([[d] for d in dimension])
@@ -103,8 +105,16 @@ class Scorer():
 	'''Sends the points through the numpy standard deviation finder and returns the results.'''
 	def getSTD(self, dimension):
 		dimensionNP = np.array(dimension)
-		return np.std(dimensionNP)		
-		
+		return np.std(dimensionNP)	
+
+	def setClosestTo(self, dimension, yAxis, limit):
+		for i in range(1, len(dimension)):
+			if dimension[i] >= limit:
+				if yAxis[i] == 0:
+					yAxis[i] = 1
+				else:
+					yAxis[i-1] = 1
+				break		
 		
 	'''
 	Once the regression has been calculated, this will retrieve the probability
@@ -125,8 +135,12 @@ class Scorer():
 				continue
 				
 			num = point[i]
-			predictedProb = logit.predict_proba([num])[0][1]
-			prob += predictedProb*attrWeight
+			if num > 0:
+				predictedProb = logit.predict_proba([num])[0][1]
+				prob += predictedProb*attrWeight
 			ctr += attrWeight
-				
-		return prob / ctr
+
+		if ctr > 0:
+			prob /= ctr
+
+		return prob

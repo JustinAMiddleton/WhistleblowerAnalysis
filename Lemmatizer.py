@@ -1,11 +1,14 @@
 '''
-This class takes in a text and transforms it into a lemmatized form.
+This class takes in a text and transforms it into a lemmatized/stemmed form.
+Author:	Justin A. Middleton
 '''
 from nltk import word_tokenize, pos_tag, map_tag, WordNetLemmatizer
+from nltk.stem.snowball import SnowballStemmer
 
 class Lemmatizer():
 	def __init__(self):
 		self.lemmatizer = WordNetLemmatizer()
+		self.stemmer = SnowballStemmer("english", ignore_stopwords=True)
 
 	'''
 	Lemmatizes every word in a sentence and then tokenizes it.	
@@ -41,3 +44,17 @@ class Lemmatizer():
 				lemmatized = self.lemmatizer.lemmatize(token) #pos = 'n'
 			lemmas.append(lemmatized.encode("utf-8"))
 		return lemmas
+
+	'''
+	Reduce this word down to its most basic form by removing suffixes or common ending
+	and finding the "root" or "stem" of the word.
+
+	Example: "response," "responsive," and "responsivity" all stem from "respons," or 
+	something similar.
+	'''
+	def stem(self, tokens):
+		stemmed = []
+		for token in tokens:
+			stem = self.stemmer.stem(token)
+			stemmed.append(stem.encode("utf-8"))
+		return stemmed

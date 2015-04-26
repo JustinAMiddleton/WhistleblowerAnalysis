@@ -42,7 +42,7 @@ class Attribute():
 			self.name = name
 			
 		#This is to give each attribute a name of its own that isn't the default "Attribute"
-		if name == "Attribute" and self.words is not None and self.weights is not None:
+		if (name == "Attribute" or name == "") and self.words is not None and self.weights is not None:
 			newName = self.generate_name(self.words, self.weights)
 			#If no words are set, then we don't have anything to change it to.
 			if newName != "":	
