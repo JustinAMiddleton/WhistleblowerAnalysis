@@ -19,7 +19,10 @@ class Scorer():
 	What I expect: a list of tuples
 		A SearchPacket with attributes.
 	'''
-	def __init__(self, searchPacket):      
+	def __init__(self, searchPacket = None):
+		if searchPacket is None or not isinstance(searchPacket, SearchPacket):
+			raise ValueError("__init__: must have search packet parameter.")
+			
 		self.packet = searchPacket
 		self.points = []
 		self.graphs = []
@@ -30,8 +33,11 @@ class Scorer():
 	Ignore subjectivity. Use absolute value of polarity.
 	'''
 	def score(self, text):
+		if not isinstance(text, basestring):
+			raise ValueError("score: text must be a string.")
+			
 		processed = TextPreprocessor(text)
-		bagOfWords = processed.get_words() #LINE WILL CHANGE
+		bagOfWords = processed.get_words() 
 		polarity = TextBlob(processed.get_raw()).sentiment.polarity
 		scores = []
 		
@@ -63,6 +69,11 @@ class Scorer():
 	def sum_posts(self, posts):
 		sumVector = [0,0,0,0,0]
 		for post in posts:
+			keys = post.keys()
+			if not ("score1" in keys and "score2" in keys and "score3" in keys \
+							and "score4" in keys and "score5" in keys):
+				continue
+			
 			postArray = [post["score%d" % i] for i in range (1, 6)]		
 			sumVector = [x+y for x, y in zip(sumVector, postArray)]
 		return sumVector
