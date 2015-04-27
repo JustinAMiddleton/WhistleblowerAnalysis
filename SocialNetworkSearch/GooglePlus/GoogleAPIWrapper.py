@@ -14,7 +14,7 @@ class GoogleAPIWrapper(object):
 	@staticmethod
 	def get_api_key():
 		# this one is old anyway. New key won't be posted publicly.
-		api_key="AIzaSyDAzvL9nU0nv7j84UfvWXygwXO9hDbKYDk"
+		api_key="AIzaSyC-980Av1mXcx3ugAqeB_G5lUTyGG-IN5o"
 
 		# try:
 		# 	fp = open("google_api.txt")

@@ -123,11 +123,11 @@ class dbFacade(object):
 				website text,
 				content text,
 				query text,
-				score1 float,
-				score2 float,
-				score3 float,
-				score4 float,
-				score5 float,
+				score1 int,
+				score2 int,
+				score3 int,
+				score4 int,
+				score5 int,
 				PRIMARY KEY (username, id)	
 			);
 			""" % self.keyspace)
