@@ -5,6 +5,8 @@ from SocialNetworkSearch.TwitterAPIWrapper import TwitterAPIWrapper
 from SocialNetworkSearch.Tweet import Tweet
 from dbFacade import dbFacade
 from Scorer import Scorer
+from Attribute import Attribute
+from SearchPacket import SearchPacket
 
 '''
 Unit tests for the TwitterThread class
@@ -25,7 +27,8 @@ class test_TwitterThread(unittest.TestCase):
 		self.db = dbFacade()
 		self.db.connect()
 		self.db.create_keyspace_and_schema()
-		self.scorer = Scorer(zip(words, weights, targetSentiment))
+		attr = Attribute("attr", 1, words, weights, targetSentiment)
+		self.scorer = Scorer(SearchPacket([attr]))
 
 	@classmethod
 	def tearDownClass(self):

@@ -21,6 +21,7 @@ class dbFacade(object):
 			try:
 				cluster = Cluster(['131.204.27.98'])
 				self.session = cluster.connect()
+				self.session.default_timeout = 30
 				break;
 			except cassandra.cluster.NoHostAvailable:
 				print "Connection failed, retrying.."

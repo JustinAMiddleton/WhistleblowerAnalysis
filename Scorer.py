@@ -67,6 +67,10 @@ class Scorer():
 				scores from the above function.
 	'''
 	def sum_posts(self, posts):
+		if not isinstance(posts, list) or len(posts) == 0:
+			raise ValueError("sum_posts: parameter posts must be a nonempty list")
+		elif not isinstance(posts[0], dict):
+			raise ValueError("sum_posts: parameter posts must be populated with dicts")
 		sumVector = [0,0,0,0,0]
 		for post in posts:
 			keys = post.keys()
@@ -80,6 +84,8 @@ class Scorer():
 		
 	'''Add a datapoint to the list being maintained in this class.'''
 	def add_point(self, point):
+		if not isinstance(point, list):
+			raise ValueError("add_point: parameter point must be a list")
 		self.points.append(point)
 		
 	'''
@@ -149,6 +155,13 @@ class Scorer():
 			
 	'''Sends the points through the numpy standard deviation finder and returns the results.'''
 	def getSTD(self, dimension):
+		if not isinstance(dimension, list):
+			raise ValueError("getSTD: parameter dimension must be a list")
+		elif len(dimension) == 0:
+			raise ValueError("getSTD: parameter dimension must not be empty")
+		elif not isinstance(dimension[0], int):
+			raise ValueError("getSTD: values in dimension must be ints")
+
 		dimensionNP = np.array(dimension)
 		return np.std(dimensionNP)	
 
@@ -159,13 +172,24 @@ class Scorer():
 	all the way.
 	'''
 	def setClosestTo(self, dimension, yAxis, limit):
+		if len(dimension) != len(yAxis):
+			raise ValueError("setClosestTo: the two lists must be the same length")
+		elif len(dimension) < 2:
+			raise ValueError("setClosestTo: there must be at least two values in the list")
+
+		found = False
+		#Never let the lowest be a 1.
 		for i in range(1, len(dimension)):
 			if dimension[i] >= limit:
 				if yAxis[i] == 0:
 					yAxis[i] = 1
-				else:
+				elif i > 1:
 					yAxis[i-1] = 1
+				found = True
 				break		
+
+		if not found:
+			yAxis[-1] = 1
 		
 	'''
 	Once the regression has been calculated, this will retrieve the probability
@@ -179,6 +203,13 @@ class Scorer():
 					number being the score for each attribute
 	'''
 	def get_prob(self, point):
+		if not isinstance(point, list):
+			raise ValueError("get_prob: parameter point must be a list")
+		elif len(point) != 5 or not isinstance(point[0], int):
+			raise ValueError("get_prob: parameter point must be a int list of length 5") 
+		elif len(self.graphs) == 0:
+			raise ValueError("get_prob: graphs not yet fit")
+
 		prob = 0
 		ctr = 0
 		
@@ -190,6 +221,9 @@ class Scorer():
 			if logit is None:
 				continue
 				
+			#Right now, it ignores the probability if no instance of this word was found
+			#This leaves the question of whether the absence of a word is more significant than 
+			#its presence. But for now, ignore that.
 			num = point[i]
 			if num > 0:
 				predictedProb = logit.predict_proba([num])[0][1]
