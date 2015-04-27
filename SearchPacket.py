@@ -85,13 +85,15 @@ class SearchPacket:
 		cleanWeights = []
 		cleanSents = []
 
-		'''Stop words: a list of the most commonly used words in the english language
-	  I remove them because keeping them will bloat the running time and the words
-		probably won't give us any of the information we want.'''
+		'''
+		Stop words: a list of the most commonly used words in the english language
+	  	I remove them because keeping them will bloat the running time and the words
+		probably won't give us any of the information we want.
+		'''
 		stop = stopwords.words("english")
 		for word, weight, sent in zip(dirtyWords, dirtyWeights, dirtySents):
 			word = word.lower()
-			word = self.lemma.stem([word])[0]#self.lemma.lemmatizeTokens([word])[0]
+			word = self.lemma.lemmatizeTokens([word])[0] #self.lemma.stem([word])[0]#
 			if word in cleanWords or word in stop or word == "":
 				continue
 			if weight < 1 or weight > 3:
