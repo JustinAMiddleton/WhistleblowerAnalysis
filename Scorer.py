@@ -67,9 +67,9 @@ class Scorer():
 				scores from the above function.
 	'''
 	def sum_posts(self, posts):
-		if not isinstance(posts, list) or len(posts) == 0:
-			raise ValueError("sum_posts: parameter posts must be a nonempty list")
-		elif not isinstance(posts[0], dict):
+		if not isinstance(posts, list):
+			raise ValueError("sum_posts: parameter posts must be a list")
+		elif len(posts) > 0 and not isinstance(posts[0], dict):
 			raise ValueError("sum_posts: parameter posts must be populated with dicts")
 		sumVector = [0,0,0,0,0]
 		for post in posts:
