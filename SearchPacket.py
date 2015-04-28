@@ -57,7 +57,7 @@ class SearchPacket:
 		
 		if dirtyWords is None or dirtyWeights is None or dirtySents is None:
 			raise ValueError("sanitizeAttribute: Unassigned values in attribute.")
-		if len(dirtyWords) != len(dirtyWeights) or len(dirtyWords) != len(dirtySents):
+		elif len(dirtyWords) != len(dirtyWeights) or len(dirtyWords) != len(dirtySents):
 			raise ValueError("sanitizeAttribute: list length mismatch.")
 			
 		cleanWords,	cleanWeights, cleanSents = self.cleanInfoLists(dirtyWords, 
@@ -92,13 +92,19 @@ class SearchPacket:
 		'''
 		stop = stopwords.words("english")
 		for word, weight, sent in zip(dirtyWords, dirtyWeights, dirtySents):
-			word = word.lower()
-			word = self.lemma.lemmatizeTokens([word])[0] #self.lemma.stem([word])[0]#
-			if word in cleanWords or word in stop or word == "":
+			word = word.lower().strip()
+
+			#Lemmatize it only if it's a single word; otherwise, preserve the phrase
+			if len(word.split()) == 1:
+				word = self.lemma.lemmatizeTokens([word])[0] #self.lemma.stem([word])[0]#
+				if word in cleanWords or word in stop or word == "":
+					continue
+			elif len(word.split()) == 0:
 				continue
+
 			if weight < 1 or weight > 3:
 				continue
-			if sent < -1 or sent > 1:
+			elif sent < -1 or sent > 1:
 				continue
 				
 			cleanWords.append(word)
@@ -118,8 +124,8 @@ class SearchPacket:
 	def getQuery(self):
 		attributeQueries = []
 		for attr in self.attributes:
-			query = " OR ".join(attr.get_words())
+			query = '"' + '" OR "'.join(attr.get_words()) + '"'
 			attributeQueries.append(query)
-		finalQuery = " OR ".join(attributeQueries)
+		finalQuery = ' OR '.join(attributeQueries)
 		return finalQuery
 		

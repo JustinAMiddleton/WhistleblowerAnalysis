@@ -1,4 +1,5 @@
 import threading
+import re
 from CrawlThread import CrawlThread
 from EnronSearch import EnronSearch
 from dbFacade import dbFacade
@@ -28,7 +29,8 @@ class EnronThread(CrawlThread):
 		self.scorer = scorer
 		self.query = query
 		self.args = args
-		self.word_deck = query.split(" OR ")
+		newQuery = re.sub('"', '', query)
+		self.word_deck = newQuery.split(" OR ")
 
 	def run(self):
 		self.search()
@@ -39,5 +41,6 @@ class EnronThread(CrawlThread):
 
 		try:
 			enron.search_enron()
+			print "Done"
 		except KeyboardInterrupt:
 			print('\n Enron: Terminated by user (search)\n')

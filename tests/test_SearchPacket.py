@@ -141,7 +141,7 @@ class test_SearchPacket(unittest.TestCase):
 
 #getQuery
 	def test200_000_getQuery(self):
-		self.assertEquals(self.packet.getQuery(), "one OR two OR three OR four OR five OR six")
+		self.assertEquals(self.packet.getQuery(), '"one" OR "two" OR "three" OR "four" OR "five" OR "six"')
 			
 if __name__ == '__main__':
 	unittest.main()  

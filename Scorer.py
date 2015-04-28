@@ -37,18 +37,23 @@ class Scorer():
 			raise ValueError("score: text must be a string.")
 			
 		processed = TextPreprocessor(text)
-		bagOfWords = processed.get_words() 
+		words = processed.get_words() 
 		polarity = TextBlob(processed.get_raw()).sentiment.polarity
 		scores = []
 		
 		for attr in self.packet.getAttributes():
 			attrScore = 0
 			for i in range(0, attr.get_size()):
+				word = attr.get_word(i)
+				multiword = len(word.split()) > 1
 				expectedSent = attr.get_sentiment_num(i)
-				if polarity * expectedSent >= 0:
-					word = attr.get_word(i)
+				if polarity * expectedSent >= 0:				
 					significance = attr.get_weight_num(i)
-					attrScore += bagOfWords.count(word) * significance
+					if multiword:
+						spacedText = " ".join(processed.get_tokens())
+						attrScore += spacedText.count(word) * significance
+					else:
+						attrScore += words.count(word) * significance
 			
 			scores.append(attrScore)
 			
@@ -115,7 +120,7 @@ class Scorer():
 			dimension.sort()
 			
 			#The moment we hit an array with zero as the highest, then there's nothing to be done.
-			if len(dimension) == 0 or dimension[-1] == 0:
+			if len(dimension) < 2 or dimension[-1] == 0:
 				self.graphs.append(None)
 				continue
 			

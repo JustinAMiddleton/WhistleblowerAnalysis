@@ -61,6 +61,9 @@ class SearchInterface:
 
     def populate_user_scores(self, users, progress_que):
         completion = 0.0
+        if len(users) == 0:
+            return
+
         step_progress = ((1.0/len(users))*0.67)*100
         sums = self.fit_scorer(users)
 

@@ -28,17 +28,14 @@ class TextPreprocessor:
 	each of the individual steps enumerated at the top-level comment.
 	'''
 	def preprocess(self, text):
-		preprocessed = {}
 		text = text.lower()
-		preprocessed["original"] = text.lower()
-		
-		t0 = time.time()
 		self.tokens = word_tokenize(text)
 		
-		stop = stopwords.words("english")
-		self.tokens = [word for word in self.tokens if word not in stop] #clear it of pesky stop words
-		#self.spellchecked = self.spellcheck(self.tokens)
+		#stop = [word.decode('utf-8') for word in stopwords.words("english")]
+		#toLemmatize = [word for word in self.tokens if word.encode('utf-8') not in stop] #clear it of pesky stop words
 		self.lemmatized = self.lemmatizer.lemmatizeTokens(self.tokens)#self.lemmatizer.stem(self.tokens) #
+		#self.spellchecked = self.spellcheck(self.tokens)
+
 		
 	'''
 	Uses the textblob library to attempt to check the speller.

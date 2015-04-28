@@ -17,6 +17,9 @@ search arguments.
 '''
 
 class GuiThread(threading.Thread):
+
+	completed = False	
+
 	def __init__(self, interface, attributes, args, progress_que):
 		if interface is None:
 			raise TypeError('interface argument required')
@@ -47,6 +50,7 @@ class GuiThread(threading.Thread):
 		self.query = self.search_packet.getQuery()
 		self.interface.search(self.query, self.args)
 		time.sleep(1)
+		self.completed = True
 
 	def stop(self):
 		self.interface.stop_search()
